@@ -9,71 +9,58 @@
         :root { --bg: #0b1120; --card: #1e293b; --cyan: #06b6d4; --green: #10b981; --red: #ef4444; --text: #f8fafc; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         
-        /* Tela de Login Simples */
-        #login-screen { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 100; }
-        .login-box { background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid #334155; text-align: center; }
-        .login-box input { background: #0b1120; border: 1px solid var(--cyan); color: white; padding: 10px; border-radius: 8px; margin: 15px 0; outline: none; text-align: center; }
-        .login-box button { background: var(--cyan); border: none; color: white; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
         .header { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         #sync-status { font-size: 0.8rem; padding: 6px 14px; border-radius: 20px; background: #172133; color: var(--green); border: 1px solid #334155; }
+        
         .search-box { width: 100%; max-width: 800px; background: #172133; padding: 14px 20px; border-radius: 12px; border: 1px solid #334155; display: flex; align-items: center; }
         input { background: transparent; border: none; color: white; font-size: 1.1rem; width: 100%; margin-left: 15px; outline: none; }
-        .results-container { width: 100%; max-width: 800px; margin-top: 25px; }
         
+        .results-container { width: 100%; max-width: 800px; margin-top: 25px; }
         .route-card { background: var(--card); border-radius: 14px; padding: 18px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; border-left: 5px solid var(--cyan); }
+        
         .info-group { display: flex; align-items: center; gap: 15px; }
         .pdf-icon { background: var(--red); width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: white; }
         .details h3 { margin: 0; font-size: 1.1rem; color: #fff; }
         .details p { margin: 5px 0 0; color: #94a3b8; font-size: 0.85rem; }
+        
         .actions { display: flex; gap: 10px; }
         .btn { padding: 10px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: bold; }
         .btn-view { border: 1px solid var(--cyan); color: var(--cyan); }
         .btn-down { background: var(--green); color: #0b1120; }
+        .msg-aviso { text-align: center; margin-top: 20px; color: #94a3b8; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <h2>Acesso Restrito</h2>
-            <input type="password" id="passInput" placeholder="Senha">
-            <br>
-            <button onclick="checkPass()">Entrar</button>
-        </div>
-    </div>
-
     <div class="header">
-        <h1>Vault Locator</h1>
+        <div>
+            <h1 style="margin:0">Vault Locator</h1>
+            <p style="color: #94a3b8; font-size: 0.8rem; margin: 5px 0 0;">Busca de Diagramas de Rotas 13.8kV</p>
+        </div>
         <div id="sync-status">Sincronizando...</div>
     </div>
 
     <div class="search-box">
         <i class="fas fa-search" style="color: var(--cyan);"></i>
-        <input type="text" id="campoBusca" placeholder="Digite o número da rota...">
+        <input type="text" id="campoBusca" placeholder="Digite o número da rota (ex: 1706)...">
     </div>
 
     <div id="lista-rotas" class="results-container"></div>
 
     <script>
-        const SENHA_MESTRA = "1234"; 
-        const API_URL = "COLE_AQUI_SEU_LINK_DO_GOOGLE_SCRIPT"; 
+        // COLOQUE SEU LINK DO GOOGLE ABAIXO
+        const API_URL = "COLE_AQUI_SEU_LINK_DO_APP_DA_WEB_QUE_TERMINA_EM_EXEC"; 
         
         let bancoDeDados = [];
-
-        function checkPass() {
-            if(document.getElementById('passInput').value === SENHA_MESTRA) {
-                document.getElementById('login-screen').style.display = 'none';
-                carregarDados();
-            } else { alert("Senha incorreta!"); }
-        }
 
         async function carregarDados() {
             try {
                 const response = await fetch(API_URL);
                 bancoDeDados = await response.json();
-                document.getElementById('sync-status').innerHTML = `${bancoDeDados.length} Rotas`;
-            } catch (e) { document.getElementById('sync-status').innerText = "Erro!"; }
+                document.getElementById('sync-status').innerHTML = `<i class="fas fa-database"></i> ${bancoDeDados.length} Rotas Disponíveis`;
+            } catch (e) {
+                document.getElementById('sync-status').innerText = "Erro de Conexão";
+            }
         }
 
         function buscar() {
@@ -81,16 +68,26 @@
             const container = document.getElementById('lista-rotas');
             container.innerHTML = "";
 
-            // Se digitar pouco, não busca (para não travar)
-            if (termo.length < 3) return;
+            // TRAVA DE SEGURANÇA: Só busca se tiver 3 ou mais números (evita congelar no "1")
+            if (termo.length < 3) {
+                if(termo.length > 0) {
+                    container.innerHTML = '<div class="msg-aviso">Digite pelo menos 3 números para buscar...</div>';
+                }
+                return;
+            }
 
             const filtrados = bancoDeDados.filter(item => 
                 String(item.id).toLowerCase().includes(termo) || 
                 String(item.local).toLowerCase().includes(termo)
             );
 
-            // LIMITA EM 20 RESULTADOS (Isso impede o congelamento)
-            const limitados = filtrados.slice(0, 20);
+            // LIMITA EM 30 RESULTADOS: Para o site ficar sempre rápido
+            const limitados = filtrados.slice(0, 30);
+
+            if (limitados.length === 0) {
+                container.innerHTML = '<div class="msg-aviso">Nenhuma rota encontrada.</div>';
+                return;
+            }
 
             limitados.forEach(item => {
                 const preview = `https://drive.google.com/file/d/${item.driveId}/preview`;
@@ -114,6 +111,7 @@
         }
 
         document.getElementById('campoBusca').addEventListener('input', buscar);
+        carregarDados(); // Carrega os dados assim que abre o site
     </script>
 </body>
 </html>
