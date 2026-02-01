@@ -3,116 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vault Locator - Light 13kV</title>
+    <title>Vault Locator - Manutenção</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0b1120; --card: #1e293b; --cyan: #06b6d4; --green: #10b981; --red: #ef4444; --text: #f8fafc; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        
-        .header { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        #sync-status { font-size: 0.8rem; padding: 6px 14px; border-radius: 20px; background: #172133; color: var(--green); border: 1px solid #334155; }
-        
-        .search-box { width: 100%; max-width: 800px; background: #172133; padding: 14px 20px; border-radius: 12px; border: 1px solid #334155; display: flex; align-items: center; }
-        input { background: transparent; border: none; color: white; font-size: 1.1rem; width: 100%; margin-left: 15px; outline: none; }
-        
-        .results-container { width: 100%; max-width: 800px; margin-top: 25px; }
-        .route-card { background: var(--card); border-radius: 14px; padding: 18px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; border-left: 5px solid var(--cyan); }
-        
-        .info-group { display: flex; align-items: center; gap: 15px; }
-        .pdf-icon { background: var(--red); width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: white; }
-        .details h3 { margin: 0; font-size: 1.1rem; color: #fff; }
-        .details p { margin: 5px 0 0; color: #94a3b8; font-size: 0.85rem; }
-        
-        .actions { display: flex; gap: 10px; }
-        .btn { padding: 10px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: bold; }
-        .btn-view { border: 1px solid var(--cyan); color: var(--cyan); }
-        .btn-down { background: var(--green); color: #0b1120; }
-        .msg-aviso { text-align: center; margin-top: 20px; color: #94a3b8; font-size: 0.9rem; }
+        body { 
+            background-color: #0b1120; 
+            color: white; 
+            font-family: sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            text-align: center;
+        }
+        .icon { font-size: 4rem; color: #06b6d4; margin-bottom: 20px; }
+        h1 { margin: 10px 0; }
+        p { color: #94a3b8; max-width: 300px; line-height: 1.5; }
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <div>
-            <h1 style="margin:0">Vault Locator</h1>
-            <p style="color: #94a3b8; font-size: 0.8rem; margin: 5px 0 0;">Busca de Diagramas de Rotas 13.8kV</p>
-        </div>
-        <div id="sync-status">Sincronizando...</div>
-    </div>
-
-    <div class="search-box">
-        <i class="fas fa-search" style="color: var(--cyan);"></i>
-        <input type="text" id="campoBusca" placeholder="Digite o número da rota (ex: 1706)...">
-    </div>
-
-    <div id="lista-rotas" class="results-container"></div>
-
-    <script>
-        // COLOQUE SEU LINK DO GOOGLE ABAIXO
-        const API_URL = "https://script.google.com/macros/s/AKfycbzn9uyJCL7WEy5es-OY-WY59QgkwRhwfvotZCnhGUw4TxlbdQoY5xb4dmTDhp-GZkxF/exec"; 
-        
-        let bancoDeDados = [];
-
-        async function carregarDados() {
-            try {
-                const response = await fetch(API_URL);
-                bancoDeDados = await response.json();
-                document.getElementById('sync-status').innerHTML = `<i class="fas fa-database"></i> ${bancoDeDados.length} Rotas Disponíveis`;
-            } catch (e) {
-                document.getElementById('sync-status').innerText = "Erro de Conexão";
-            }
-        }
-
-        function buscar() {
-            const termo = document.getElementById('campoBusca').value.toLowerCase().trim();
-            const container = document.getElementById('lista-rotas');
-            container.innerHTML = "";
-
-            // TRAVA DE SEGURANÇA: Só busca se tiver 3 ou mais números (evita congelar no "1")
-            if (termo.length < 3) {
-                if(termo.length > 0) {
-                    container.innerHTML = '<div class="msg-aviso">Digite pelo menos 3 números para buscar...</div>';
-                }
-                return;
-            }
-
-            const filtrados = bancoDeDados.filter(item => 
-                String(item.id).toLowerCase().includes(termo) || 
-                String(item.local).toLowerCase().includes(termo)
-            );
-
-            // LIMITA EM 30 RESULTADOS: Para o site ficar sempre rápido
-            const limitados = filtrados.slice(0, 30);
-
-            if (limitados.length === 0) {
-                container.innerHTML = '<div class="msg-aviso">Nenhuma rota encontrada.</div>';
-                return;
-            }
-
-            limitados.forEach(item => {
-                const preview = `https://drive.google.com/file/d/${item.driveId}/preview`;
-                const download = `https://drive.google.com/uc?export=download&id=${item.driveId}`;
-
-                container.innerHTML += `
-                    <div class="route-card">
-                        <div class="info-group">
-                            <div class="pdf-icon"><i class="fas fa-file-pdf"></i></div>
-                            <div class="details">
-                                <h3>${item.local}</h3>
-                                <p>Ref: ${item.id}</p>
-                            </div>
-                        </div>
-                        <div class="actions">
-                            <a href="${preview}" target="_blank" class="btn btn-view">VER</a>
-                            <a href="${download}" class="btn btn-down">PDF</a>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        document.getElementById('campoBusca').addEventListener('input', buscar);
-        carregarDados(); // Carrega os dados assim que abre o site
-    </script>
+    <div class="icon"><i class="fas fa-tools"></i></div>
+    <h1>Vault Locator</h1>
+    <p>Estamos realizando uma manutenção rápida para melhorar a busca. Voltamos em breve!</p>
 </body>
 </html>
-
