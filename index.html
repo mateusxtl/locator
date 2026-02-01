@@ -55,20 +55,33 @@
             }
         }
 
-        function buscar() {
+function buscar() {
             const termo = document.getElementById('campoBusca').value.toLowerCase().trim();
             const container = document.getElementById('lista-rotas');
             container.innerHTML = "";
+            
+            // TRAVA 1: Só começa a procurar se digitar 3 ou mais caracteres
+            // Isso evita que o "1" tente carregar tudo
+            if (termo.length < 3) {
+                container.innerHTML = '<div class="empty-state">Digite pelo menos 3 números para buscar...</div>';
+                return;
+            }
 
-            if (termo.length < 2) return;
-
-            // Filtra comparando com ID_BUSCA ou NOME_REAL da sua planilha
             const filtrados = bancoDeDados.filter(item => 
                 String(item.id).toLowerCase().includes(termo) || 
                 String(item.local).toLowerCase().includes(termo)
             );
 
-            filtrados.forEach(item => {
+            if (filtrados.length === 0) {
+                container.innerHTML = '<div class="empty-state">Nenhuma rota encontrada.</div>';
+                return;
+            }
+
+            // TRAVA 2: Limita a exibição aos primeiros 30 resultados
+            // Mesmo que ache 500, ele só desenha 30, o que é instantâneo
+            const limitados = filtrados.slice(0, 30);
+
+            limitados.forEach(item => {
                 const preview = `https://drive.google.com/file/d/${item.driveId}/preview`;
                 const download = `https://drive.google.com/uc?export=download&id=${item.driveId}`;
 
@@ -83,10 +96,15 @@
                         </div>
                         <div class="actions">
                             <a href="${preview}" target="_blank" class="btn btn-view">VER</a>
-                            <a href="${download}" class="btn btn-down"><i class="fas fa-download"></i></a>
+                            <a href="${download}" class="btn btn-down">PDF</a>
                         </div>
                     </div>`;
             });
+
+            // Aviso caso existam muitos resultados ocultos
+            if (filtrados.length > 30) {
+                container.innerHTML += `<div class="empty-state">Mais de 30 resultados encontrados. Refine sua busca.</div>`;
+            }
         }
 
         document.getElementById('campoBusca').addEventListener('input', buscar);
@@ -95,4 +113,5 @@
 </body>
 
 </html>
+
 
