@@ -7,70 +7,59 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --bg: #0b1120; --card: #1e293b; --cyan: #06b6d4; --green: #10b981; --red: #ef4444; --text: #f8fafc; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         
-        #login-screen { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; }
-        .login-box { background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid #334155; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .login-box input { background: #0b1120; border: 1px solid var(--cyan); color: white; padding: 12px; border-radius: 8px; margin: 15px 0; outline: none; text-align: center; font-size: 1.1rem; }
-        .login-box button { background: var(--cyan); border: none; color: white; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
+        /* Tela de Login Simples */
+        #login-screen { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 100; }
+        .login-box { background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid #334155; text-align: center; }
+        .login-box input { background: #0b1120; border: 1px solid var(--cyan); color: white; padding: 10px; border-radius: 8px; margin: 15px 0; outline: none; text-align: center; }
+        .login-box button { background: var(--cyan); border: none; color: white; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
         .header { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         #sync-status { font-size: 0.8rem; padding: 6px 14px; border-radius: 20px; background: #172133; color: var(--green); border: 1px solid #334155; }
-        
-        .search-box { width: 100%; max-width: 800px; background: #172133; padding: 14px 20px; border-radius: 12px; border: 1px solid #334155; display: flex; align-items: center; box-sizing: border-box; }
-        .search-box input { background: transparent; border: none; color: white; font-size: 1.1rem; width: 100%; margin-left: 15px; outline: none; }
-        
+        .search-box { width: 100%; max-width: 800px; background: #172133; padding: 14px 20px; border-radius: 12px; border: 1px solid #334155; display: flex; align-items: center; }
+        input { background: transparent; border: none; color: white; font-size: 1.1rem; width: 100%; margin-left: 15px; outline: none; }
         .results-container { width: 100%; max-width: 800px; margin-top: 25px; }
-        .route-card { background: var(--card); border-radius: 14px; padding: 18px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; border-left: 5px solid var(--cyan); animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
         
-        .info-group { display: flex; align-items: center; gap: 15px; overflow: hidden; }
-        .pdf-icon { background: var(--red); min-width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: white; }
-        .details h3 { margin: 0; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
+        .route-card { background: var(--card); border-radius: 14px; padding: 18px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; border-left: 5px solid var(--cyan); }
+        .info-group { display: flex; align-items: center; gap: 15px; }
+        .pdf-icon { background: var(--red); width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: white; }
+        .details h3 { margin: 0; font-size: 1.1rem; color: #fff; }
         .details p { margin: 5px 0 0; color: #94a3b8; font-size: 0.85rem; }
-        
-        .actions { display: flex; gap: 8px; }
-        .btn { padding: 10px 14px; border-radius: 8px; text-decoration: none; font-size: 0.75rem; font-weight: bold; text-align: center; }
+        .actions { display: flex; gap: 10px; }
+        .btn { padding: 10px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: bold; }
         .btn-view { border: 1px solid var(--cyan); color: var(--cyan); }
         .btn-down { background: var(--green); color: #0b1120; }
-        
-        .empty-state { text-align: center; margin-top: 40px; color: #94a3b8; font-style: italic; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
-            <i class="fas fa-bolt" style="font-size: 2.5rem; color: var(--cyan);"></i>
-            <h2 style="margin-top:10px">Vault Locator</h2>
-            <p style="color:#94a3b8; font-size: 0.9rem">Digite a senha para acessar</p>
+            <h2>Acesso Restrito</h2>
             <input type="password" id="passInput" placeholder="Senha">
-            <button onclick="checkPass()">ENTRAR</button>
+            <br>
+            <button onclick="checkPass()">Entrar</button>
         </div>
     </div>
 
     <div class="header">
-        <div>
-            <h1 style="margin:0; font-size: 1.4rem;">Vault Locator</h1>
-            <p id="count-info" style="color: #94a3b8; font-size: 0.75rem; margin-top: 5px;">Carregando banco de dados...</p>
-        </div>
-        <div id="sync-status"><i class="fas fa-spinner fa-spin"></i></div>
+        <h1>Vault Locator</h1>
+        <div id="sync-status">Sincronizando...</div>
     </div>
 
     <div class="search-box">
         <i class="fas fa-search" style="color: var(--cyan);"></i>
-        <input type="text" id="campoBusca" placeholder="ID da rota ou nome do cliente..." autocomplete="off">
+        <input type="text" id="campoBusca" placeholder="Digite o número da rota...">
     </div>
 
     <div id="lista-rotas" class="results-container"></div>
 
     <script>
-        // CONFIGURAÇÕES
-        const SENHA_MESTRA = "1234"; // Troque aqui
-        const API_URL = "SUA_URL_DA_PLANILHA_AQUI"; // Troque aqui
+        const SENHA_MESTRA = "1234"; 
+        const API_URL = "COLE_AQUI_SEU_LINK_DO_GOOGLE_SCRIPT"; 
         
         let bancoDeDados = [];
-        let timeoutBusca = null;
 
         function checkPass() {
             if(document.getElementById('passInput').value === SENHA_MESTRA) {
@@ -83,66 +72,45 @@
             try {
                 const response = await fetch(API_URL);
                 bancoDeDados = await response.json();
-                document.getElementById('sync-status').innerHTML = '<i class="fas fa-check-circle"></i> ON';
-                document.getElementById('count-info').innerText = `${bancoDeDados.length} rotas sincronizadas`;
-            } catch (e) {
-                document.getElementById('sync-status').innerHTML = 'OFF';
-                document.getElementById('count-info').innerText = 'Erro ao carregar dados.';
-            }
+                document.getElementById('sync-status').innerHTML = `${bancoDeDados.length} Rotas`;
+            } catch (e) { document.getElementById('sync-status').innerText = "Erro!"; }
         }
 
-        // Função de busca otimizada (Debounce)
         function buscar() {
-            clearTimeout(timeoutBusca);
             const termo = document.getElementById('campoBusca').value.toLowerCase().trim();
             const container = document.getElementById('lista-rotas');
+            container.innerHTML = "";
 
-            if (termo.length < 3) {
-                container.innerHTML = '<div class="empty-state">Digite pelo menos 3 caracteres...</div>';
-                return;
-            }
+            // Se digitar pouco, não busca (para não travar)
+            if (termo.length < 3) return;
 
-            // Espera 300ms após a última tecla para processar
-            timeoutBusca = setTimeout(() => {
-                container.innerHTML = "";
-                
-                const filtrados = bancoDeDados.filter(item => 
-                    String(item.id).toLowerCase().includes(termo) || 
-                    String(item.local).toLowerCase().includes(termo)
-                );
+            const filtrados = bancoDeDados.filter(item => 
+                String(item.id).toLowerCase().includes(termo) || 
+                String(item.local).toLowerCase().includes(termo)
+            );
 
-                // Mostra no máximo os 20 primeiros resultados para não congelar
-                const limitados = filtrados.slice(0, 20);
+            // LIMITA EM 20 RESULTADOS (Isso impede o congelamento)
+            const limitados = filtrados.slice(0, 20);
 
-                if (limitados.length === 0) {
-                    container.innerHTML = '<div class="empty-state">Nenhum resultado para "' + termo + '"</div>';
-                    return;
-                }
+            limitados.forEach(item => {
+                const preview = `https://drive.google.com/file/d/${item.driveId}/preview`;
+                const download = `https://drive.google.com/uc?export=download&id=${item.driveId}`;
 
-                limitados.forEach(item => {
-                    const preview = `https://drive.google.com/file/d/${item.driveId}/preview`;
-                    const download = `https://drive.google.com/uc?export=download&id=${item.driveId}`;
-
-                    container.innerHTML += `
-                        <div class="route-card">
-                            <div class="info-group">
-                                <div class="pdf-icon"><i class="fas fa-file-pdf"></i></div>
-                                <div class="details">
-                                    <h3>${item.local}</h3>
-                                    <p>ID: ${item.id}</p>
-                                </div>
+                container.innerHTML += `
+                    <div class="route-card">
+                        <div class="info-group">
+                            <div class="pdf-icon"><i class="fas fa-file-pdf"></i></div>
+                            <div class="details">
+                                <h3>${item.local}</h3>
+                                <p>Ref: ${item.id}</p>
                             </div>
-                            <div class="actions">
-                                <a href="${preview}" target="_blank" class="btn btn-view">VER</a>
-                                <a href="${download}" class="btn btn-down">PDF</a>
-                            </div>
-                        </div>`;
-                });
-
-                if (filtrados.length > 20) {
-                    container.innerHTML += `<p style="text-align:center; color:#94a3b8; font-size:0.8rem">+${filtrados.length - 20} resultados. Seja mais específico.</p>`;
-                }
-            }, 300);
+                        </div>
+                        <div class="actions">
+                            <a href="${preview}" target="_blank" class="btn btn-view">VER</a>
+                            <a href="${download}" class="btn btn-down">PDF</a>
+                        </div>
+                    </div>`;
+            });
         }
 
         document.getElementById('campoBusca').addEventListener('input', buscar);
