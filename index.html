@@ -3,118 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador de Rotas</title>
+    <title>Sistema em Manutenção</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #111827; --card: #1f2937; --cyan: #38bdf8; --green: #10b981; --text: #f3f4f6; --text-dim: #9ca3af; --red: #ef4444; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
-        .main-header { padding: 30px 20px; max-width: 800px; margin: 0 auto; display: flex; align-items: center; gap: 20px; }
-        .logo-box { background: linear-gradient(135deg, #3b82f6, #0ea5e9); width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
-        .nav-tabs { max-width: 800px; margin: 0 auto; display: flex; border-bottom: 1px solid #374151; padding: 0 20px; gap: 30px; }
-        .tab-link { color: var(--text-dim); padding: 15px 5px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; border-bottom: 3px solid transparent; transition: 0.3s; }
-        .tab-link.active { color: var(--cyan); border-bottom-color: var(--cyan); }
-        .content-area { max-width: 800px; margin: 25px auto; padding: 0 20px; }
-        .search-wrapper { position: relative; margin-bottom: 25px; }
-        .search-wrapper i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--cyan); font-size: 1.2rem; }
-        .search-wrapper input { width: 100%; background: var(--card); border: 1px solid #374151; padding: 16px 16px 16px 55px; border-radius: 12px; color: white; font-size: 1.1rem; outline: none; box-sizing: border-box; }
-        .card { background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid #374151; display: flex; justify-content: space-between; align-items: center; }
-        .card-info h3 { margin: 0; font-size: 1.1rem; }
-        .btn-action { padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
-        .btn-pdf { border: 1px solid var(--cyan); color: var(--cyan); }
-        .btn-maps { background: var(--green); color: #064e3b; }
-        .status-badge { font-size: 0.75rem; background: #111827; padding: 5px 12px; border-radius: 20px; color: var(--green); border: 1px solid #374151; margin-top: 10px; display: inline-block; }
-        .hidden { display: none; }
+        :root { 
+            --bg: #0f172a; 
+            --blue: #3b82f6; 
+            --purple: #8b5cf6;
+            --text: #f8fafc; 
+            --text-dim: #94a3b8;
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container { text-align: center; padding: 20px; animation: fadeIn 0.8s ease; }
+        
+        /* O ícone bonito que você curtiu */
+        .icon-box { 
+            background: linear-gradient(135deg, var(--blue), var(--purple)); 
+            width: 100px; 
+            height: 100px; 
+            border-radius: 25px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 3rem; 
+            margin: 0 auto 30px;
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.4);
+            position: relative;
+        }
+
+        /* Efeito de pulso para parecer que o sistema está "vivo" */
+        .icon-box::after {
+            content: '';
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 25px;
+            border: 2px solid var(--blue);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1 { font-size: 2rem; margin-bottom: 10px; letter-spacing: -1px; }
+        p { color: var(--text-dim); font-size: 1.1rem; max-width: 400px; margin: 0 auto 30px; line-height: 1.6; }
+
+        .badge-manutencao {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--blue);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .loader {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 20px;
+        }
+        .dot { width: 8px; height: 8px; background: var(--blue); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
     </style>
 </head>
 <body>
 
-    <header class="main-header">
-        <div class="logo-box"><i class="fas fa-snowflake" style="color: white;"></i></div>
-        <div style="flex-grow: 1;">
-            <h1 style="margin:0; font-size: 1.8rem;">Gerenciador de Rotas</h1>
-            <p style="margin:5px 0 0; color:var(--text-dim);">Busque, visualize e navegue</p>
-        </div>
-    </header>
-
-    <nav class="nav-tabs">
-        <div class="tab-link active" onclick="showTab('rotas', this)"><i class="fas fa-route"></i> Rotas</div>
-        <div class="tab-link" onclick="showTab('vaults', this)"><i class="fas fa-layer-group"></i> Vaults</div>
-    </nav>
-
-    <main class="content-area">
-        <div id="view-rotas">
-            <div class="search-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" id="inRotas" placeholder="Número da rota ou nome..." oninput="execBusca('rotas')">
-            </div>
-            <div id="res-rotas"></div>
+    <div class="container">
+        <div class="icon-box">
+            <i class="fas fa-snowflake" style="color:white"></i>
         </div>
 
-        <div id="view-vaults" class="hidden">
-            <div class="search-wrapper">
-                <i class="fas fa-map-marker-alt" style="color:var(--green)"></i>
-                <input type="text" id="inVaults" placeholder="Digite a CT ou Bairro..." oninput="execBusca('vaults')">
-            </div>
-            <div id="res-vaults"></div>
+        <span class="badge-manutencao">Atualização em andamento</span>
+        <h1>Sistema Network</h1>
+        <p>Estamos realizando melhorias nos bancos de dados e no localizador de rotas. Voltamos em alguns minutos!</p>
+
+        <div class="loader">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
         </div>
-        
-        <center id="loading-area">
-            <div id="st-rotas" class="status-badge" style="color: var(--text-dim)">Rotas: Sincronizando...</div>
-            <div id="st-vaults" class="status-badge" style="color: var(--text-dim)">Vaults: Sincronizando...</div>
-        </center>
-    </main>
+    </div>
 
-    <script>
-        const URL_ROTAS = "https://script.google.com/macros/s/AKfycbzn9uyJCL7WEy5es-OY-WY59QgkwRhwfvotZCnhGUw4TxlbdQoY5xb4dmTDhp-GZkxF/exec";
-        const URL_VAULTS = "";
-
-        let db = { rotas: [], vaults: [] };
-
-        async function carregar(url, tipo, statusId) {
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                db[tipo] = data;
-                document.getElementById(statusId).innerHTML = `● ${tipo.toUpperCase()} Online`;
-                document.getElementById(statusId).style.color = "var(--green)";
-            } catch (e) {
-                document.getElementById(statusId).innerHTML = `X Erro no link ${tipo.toUpperCase()}`;
-                document.getElementById(statusId).style.color = "var(--red)";
-            }
-        }
-
-        function showTab(tab, el) {
-            document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
-            el.classList.add('active');
-            document.getElementById('view-' + tab).classList.remove('hidden');
-        }
-
-        function execBusca(tipo) {
-            const termo = document.getElementById(tipo === 'rotas' ? 'inRotas' : 'inVaults').value.toLowerCase().trim();
-            const container = document.getElementById('res-' + tipo);
-            container.innerHTML = "";
-            if (termo.length < 2) return;
-
-            const lista = db[tipo].filter(item => {
-                if (tipo === 'rotas') return String(item.id + item.local).toLowerCase().includes(termo);
-                // Mapeamento exato da sua planilha: CT, SISTEMA, Bairro, ENDERECO
-                return String(item.ct + item.bairro + item.endereco).toLowerCase().includes(termo);
-            }).slice(0, 20);
-
-            lista.forEach(item => {
-                if (tipo === 'rotas') {
-                    container.innerHTML += `<div class="card"><div class="card-info"><h3>${item.local}</h3><p>ID: ${item.id}</p></div><a href="https://drive.google.com/file/d/${item.driveId}/preview" target="_blank" class="btn-action btn-pdf">PDF</a></div>`;
-                } else {
-                    const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.endereco + ', ' + item.bairro + ', Rio de Janeiro')}`;
-                    container.innerHTML += `<div class="card"><div class="card-info"><h3>CT ${item.ct}</h3><p>${item.endereco}</p><p style="color:var(--cyan);font-size:0.75rem">${item.bairro} (${item.sistema})</p></div><a href="${maps}" target="_blank" class="btn-action btn-maps">MAPS</a></div>`;
-                }
-            });
-        }
-
-        carregar(URL_ROTAS, 'rotas', 'st-rotas');
-        carregar(URL_VAULTS, 'vaults', 'st-vaults');
-    </script>
 </body>
 </html>
-
