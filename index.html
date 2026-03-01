@@ -3,27 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador de Rotas</title>
+    <title>Gerenciador de Rotas </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #111827; --card: #1f2937; --cyan: #38bdf8; --green: #10b981; --text: #f3f4f6; --text-dim: #9ca3af; --red: #ef4444; }
+        :root { 
+            --bg: #0b0f19; 
+            --card: #161b22; 
+            --cyan: #38bdf8; 
+            --green: #10b981; 
+            --text: #f3f4f6; 
+            --text-dim: #9ca3af; 
+            --red: #ef4444; 
+            --border: #30363d;
+        }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
-        .main-header { padding: 30px 20px; max-width: 800px; margin: 0 auto; display: flex; align-items: center; gap: 20px; }
+        
+        /* HEADER */
+        .main-header { padding: 30px 20px; max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 20px; }
         .logo-box { background: linear-gradient(135deg, #3b82f6, #0ea5e9); width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
-        .nav-tabs { max-width: 800px; margin: 0 auto; display: flex; border-bottom: 1px solid #374151; padding: 0 20px; gap: 30px; }
+        
+        /* NAVEGAÇÃO */
+        .nav-tabs { max-width: 900px; margin: 0 auto; display: flex; border-bottom: 1px solid var(--border); padding: 0 20px; gap: 30px; }
         .tab-link { color: var(--text-dim); padding: 15px 5px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; border-bottom: 3px solid transparent; transition: 0.3s; }
         .tab-link.active { color: var(--cyan); border-bottom-color: var(--cyan); }
-        .content-area { max-width: 800px; margin: 25px auto; padding: 0 20px; }
+        
+        /* CONTEÚDO */
+        .content-area { max-width: 900px; margin: 25px auto; padding: 0 20px; }
         .search-wrapper { position: relative; margin-bottom: 25px; }
         .search-wrapper i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--cyan); font-size: 1.2rem; }
-        .search-wrapper input { width: 100%; background: var(--card); border: 1px solid #374151; padding: 16px 16px 16px 55px; border-radius: 12px; color: white; font-size: 1.1rem; outline: none; box-sizing: border-box; }
-        .card { background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid #374151; display: flex; justify-content: space-between; align-items: center; }
-        .card-info h3 { margin: 0; font-size: 1.1rem; }
+        .search-wrapper input { width: 100%; background: var(--card); border: 1px solid var(--border); padding: 16px 16px 16px 55px; border-radius: 12px; color: white; font-size: 1.1rem; outline: none; box-sizing: border-box; }
+        
+        /* CARDS (ROTAS) */
+        .card { background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .btn-action { padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
         .btn-pdf { border: 1px solid var(--cyan); color: var(--cyan); }
-        .btn-maps { background: var(--green); color: #064e3b; }
-        .status-badge { font-size: 0.75rem; background: #111827; padding: 5px 12px; border-radius: 20px; color: var(--green); border: 1px solid #374151; margin-top: 10px; display: inline-block; }
+        
+        /* TABELA (VAULTS) */
+        .table-container { overflow-x: auto; background: var(--card); border-radius: 12px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 700px; }
+        th { background: #0d1117; color: var(--cyan); text-align: left; padding: 12px; text-transform: uppercase; font-size: 0.7rem; border-bottom: 1px solid var(--border); }
+        td { padding: 12px; border-bottom: 1px solid var(--border); }
+        tr:nth-child(even) { background: #1c2128; }
+        .row-na { background: rgba(239, 68, 68, 0.1) !important; color: var(--red); }
+
+        .status-badge { font-size: 0.75rem; background: #111827; padding: 5px 12px; border-radius: 20px; color: var(--text-dim); border: 1px solid var(--border); margin: 5px; display: inline-block; }
         .hidden { display: none; }
+        .empty-msg { text-align: center; padding: 40px; color: var(--text-dim); font-style: italic; }
     </style>
 </head>
 <body>
@@ -31,14 +56,14 @@
     <header class="main-header">
         <div class="logo-box"><i class="fas fa-snowflake" style="color: white;"></i></div>
         <div style="flex-grow: 1;">
-            <h1 style="margin:0; font-size: 1.8rem;">Gerenciador de Rotas</h1>
-            <p style="margin:5px 0 0; color:var(--text-dim);">Busque, visualize e navegue</p>
+            <h1 style="margin:0; font-size: 1.8rem;">Gerenciamentos</h1>
+            <p style="margin:5px 0 0; color:var(--text-dim);">Rotas & Gerenciamento de Rede</p>
         </div>
     </header>
 
     <nav class="nav-tabs">
         <div class="tab-link active" onclick="showTab('rotas', this)"><i class="fas fa-route"></i> Rotas</div>
-        <div class="tab-link" onclick="showTab('vaults', this)"><i class="fas fa-layer-group"></i> Vaults</div>
+        <div class="tab-link" onclick="showTab('vaults', this)"><i class="fas fa-microchip"></i> Pontos de Abertura</div>
     </nav>
 
     <main class="content-area">
@@ -48,25 +73,42 @@
                 <input type="text" id="inRotas" placeholder="Número da rota ou nome..." oninput="execBusca('rotas')">
             </div>
             <div id="res-rotas"></div>
+            <div id="msg-rotas" class="empty-msg">Digite para buscar rotas...</div>
         </div>
 
         <div id="view-vaults" class="hidden">
             <div class="search-wrapper">
-                <i class="fas fa-map-marker-alt" style="color:var(--green)"></i>
-                <input type="text" id="inVaults" placeholder="Digite a CT ou Bairro..." oninput="execBusca('vaults')">
+                <i class="fas fa-network-wired" style="color:var(--cyan)"></i>
+                <input type="text" id="inVaults" placeholder="Busque por CABO ou CT (ex: 9005)..." oninput="execBusca('vaults')">
             </div>
-            <div id="res-vaults"></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CABO</th>
+                            <th>CONCAT.</th>
+                            <th>NET</th>
+                            3<th>CT's</th>
+                            <th>EQUIPAMENTO</th>
+                            <th>POTÊNCIA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="res-vaults"></tbody>
+                </table>
+            </div>
+            <div id="msg-vaults" class="empty-msg">Digite o cabo ou CT para pesquisar...</div>
         </div>
         
-        <center id="loading-area">
-            <div id="st-rotas" class="status-badge" style="color: var(--text-dim)">Rotas: Sincronizando...</div>
-            <div id="st-vaults" class="status-badge" style="color: var(--text-dim)">Vaults: Sincronizando...</div>
+        <center style="margin-top: 30px;">
+            <div id="st-rotas" class="status-badge">Rotas: Sincronizando...</div>
+            <div id="st-vaults" class="status-badge">Pontos de abertura...</div>
         </center>
     </main>
 
     <script>
+        // URLs das suas Planilhas (Apps Script)
         const URL_ROTAS = "https://script.google.com/macros/s/AKfycbzn9uyJCL7WEy5es-OY-WY59QgkwRhwfvotZCnhGUw4TxlbdQoY5xb4dmTDhp-GZkxF/exec";
-        const URL_VAULTS = "";
+        const URL_VAULTS = "https://script.google.com/macros/s/AKfycbxAwMI7z78WzDGhF4fHF5tAkXvnua2Norr8Jjf09ksRJxEaUnghKH9QuzeLm7vcsUPL/exec";
 
         let db = { rotas: [], vaults: [] };
 
@@ -78,7 +120,7 @@
                 document.getElementById(statusId).innerHTML = `● ${tipo.toUpperCase()} Online`;
                 document.getElementById(statusId).style.color = "var(--green)";
             } catch (e) {
-                document.getElementById(statusId).innerHTML = `X Erro no link ${tipo.toUpperCase()}`;
+                document.getElementById(statusId).innerHTML = `X Erro ${tipo.toUpperCase()}`;
                 document.getElementById(statusId).style.color = "var(--red)";
             }
         }
@@ -93,25 +135,65 @@
         function execBusca(tipo) {
             const termo = document.getElementById(tipo === 'rotas' ? 'inRotas' : 'inVaults').value.toLowerCase().trim();
             const container = document.getElementById('res-' + tipo);
+            const msg = document.getElementById('msg-' + tipo);
+            
             container.innerHTML = "";
-            if (termo.length < 2) return;
+            
+            if (termo.length < 2) {
+                msg.style.display = "block";
+                return;
+            }
+            msg.style.display = "none";
 
-            const lista = db[tipo].filter(item => {
-                if (tipo === 'rotas') return String(item.id + item.local).toLowerCase().includes(termo);
-                // Mapeamento exato da sua planilha: CT, SISTEMA, Bairro, ENDERECO
-                return String(item.ct + item.bairro + item.endereco).toLowerCase().includes(termo);
-            }).slice(0, 20);
-
-            lista.forEach(item => {
+            const filtrados = db[tipo].filter(item => {
                 if (tipo === 'rotas') {
-                    container.innerHTML += `<div class="card"><div class="card-info"><h3>${item.local}</h3><p>ID: ${item.id}</p></div><a href="https://drive.google.com/file/d/${item.driveId}/preview" target="_blank" class="btn-action btn-pdf">PDF</a></div>`;
+                    return String(item.id + item.local).toLowerCase().includes(termo);
                 } else {
-                    const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.endereco + ', ' + item.bairro + ', Rio de Janeiro')}`;
-                    container.innerHTML += `<div class="card"><div class="card-info"><h3>CT ${item.ct}</h3><p>${item.endereco}</p><p style="color:var(--cyan);font-size:0.75rem">${item.bairro} (${item.sistema})</p></div><a href="${maps}" target="_blank" class="btn-action btn-maps">MAPS</a></div>`;
+                    // Busca por Cabo ou CT na planilha de Vaults
+                    const cabo = String(item.cabo || item.CABO || "");
+                    const ct = String(item.ct || item.CT || "");
+                    return cabo.toLowerCase().includes(termo) || ct.toLowerCase().includes(termo);
+                }
+            });
+
+            if (filtrados.length === 0) {
+                msg.innerHTML = "Nenhum resultado encontrado.";
+                msg.style.display = "block";
+                return;
+            }
+
+            filtrados.slice(0, 30).forEach(item => {
+                if (tipo === 'rotas') {
+                    container.innerHTML += `
+                        <div class="card">
+                            <div class="card-info">
+                                <h3>${item.local}</h3>
+                                <p style="font-size:0.8rem; color:var(--text-dim)">ID: ${item.id}</p>
+                            </div>
+                            <a href="https://drive.google.com/file/d/${item.driveId}/preview" target="_blank" class="btn-action btn-pdf">
+                                <i class="far fa-file-pdf"></i> PDF
+                            </a>
+                        </div>`;
+                } else {
+                    // Layout de Tabela para Vaults
+                    const equip = String(item.equipamento || item.EQUIPAMENTO || "");
+                    const isNA = equip.toUpperCase().includes("(NA)");
+                    const rowClass = isNA ? "row-na" : "";
+                    
+                    container.innerHTML += `
+                        <tr class="${rowClass}">
+                            <td style="color:var(--cyan); font-weight:bold">${item.cabo || item.CABO || "-"}</td>
+                            <td>${item.concat || item.CONCAT || "-"}</td>
+                            <td>${item.net || item.NET || "-"}</td>
+                            <td style="font-weight:bold">${item.ct || item.CT || "-"}</td>
+                            <td>${equip}</td>
+                            <td style="color:var(--green)">${item.potencia || item.POTENCIA || "-"}</td>
+                        </tr>`;
                 }
             });
         }
 
+        // Inicia o carregamento
         carregar(URL_ROTAS, 'rotas', 'st-rotas');
         carregar(URL_VAULTS, 'vaults', 'st-vaults');
     </script>
